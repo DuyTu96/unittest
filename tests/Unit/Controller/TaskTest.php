@@ -1,8 +1,9 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\Controller;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Mockery;
 use App\Http\Controllers\Admin\TaskController;
@@ -13,8 +14,13 @@ use App\Models\Task;
 use App\Http\Requests\TaskRequest;
 use Illuminate\Http\RedirectResponse;
 
-class ExampleTest extends TestCase
+class TaskTest extends TestCase
 {
+    /**
+     * A basic unit test example.
+     *
+     * @return void
+     */
     private $taskRepository;
     private $subjectRepository;
     private $userRepository;
@@ -58,22 +64,22 @@ class ExampleTest extends TestCase
         $this->assertArrayHasKey('subjects', $view->getData());
     }
 
-    // public function testStore()
-    // {
-    //     $controller = new TaskController($this->taskRepository, $this->subjectRepository, $this->userRepository);
+    public function testStore()
+    {
+        $controller = new TaskController($this->taskRepository, $this->subjectRepository, $this->userRepository);
 
-    //     $this->taskRequest->shouldReceive(['subject_id', 'name', 'description'])->once()->andReturn(array());
-    //     $this->taskRepository->shouldReceive('create')->once()->andReturn(new Task());
-    //     $this->taskRequest->shouldReceive('get')->once()->andReturn(array());
+        $this->taskRequest->shouldReceive('all')->once()->andReturn(array());
+        $this->taskRepository->shouldReceive('create')->once()->andReturn(new Task());
+        $this->taskRequest->shouldReceive('get')->once()->andReturn(array());
 
-    //     $response = $controller->store($this->taskRequest);
-    //     $this->assertInstanceOf(RedirectResponse::class, $response);
-    //     $this->assertEquals(route('admin.tasks.index'), $response->headers->get('location'));
-    // }
+        $response = $controller->store($this->taskRequest);
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $this->assertEquals(route('admin.tasks.index'), $response->headers->get('location'));
+    }
 
     public function testShow()
     {
-        $id = 1;
+        $id = config('configtest.id');
         $controller = new TaskController($this->taskRepository, $this->subjectRepository, $this->userRepository);
 
         $this->taskRepository->shouldReceive('find')->once()->andReturn($id);
@@ -90,7 +96,7 @@ class ExampleTest extends TestCase
 
     public function testEdit()
     {
-        $id = 1;
+        $id = config('configtest.id');
         $controller = new TaskController($this->taskRepository, $this->subjectRepository, $this->userRepository);
 
         $this->taskRepository->shouldReceive('find')->once()->andReturn(new Task());
@@ -102,34 +108,28 @@ class ExampleTest extends TestCase
         $this->assertArrayHasKey('task', $view->getData());
     }
 
-    // public function testUpdate()
-    // {
-    //     $id = 1;
-    //     $attributes = [
-    //         'subject_id',
-    //         'name',
-    //         'description',
-    //     ];
-    //     $controller = new TaskController($this->taskRepository, $this->subjectRepository, $this->userRepository);
-    //     $this->taskRequest->shouldReceive($attributes)->once()->andReturn(array());
-    //     $this->taskRequest->shouldReceive('get')->once()->andReturn(array());
-    //     $this->taskRepository->shouldReceive('update')->once()->andReturn(new Task());
+    public function testUpdate()
+    {
+        $id = config('configtest.id');
+        $controller = new TaskController($this->taskRepository, $this->subjectRepository, $this->userRepository);
+        $this->taskRequest->shouldReceive('all')->once()->andReturn(array());
+        $this->taskRequest->shouldReceive('get')->once()->andReturn(array());
+        $this->taskRepository->shouldReceive('update')->once()->andReturn(new Task());
 
-    //     $response = $controller->update($this->taskRequest, $id);
+        $response = $controller->update($this->taskRequest, $id);
 
-    //     $this->assertInstanceOf(RedirectResponse::class, $response);
-    //     $this->assertEquals(route('admin.tasks.index'), $response->headers->get('location'));
-    // }
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $this->assertEquals(route('admin.tasks.index'), $response->headers->get('location'));
+    }
 
-    // public function testDelete()
-    // {   
-    //     $id = 1;
-    //     $controller = new TaskController($this->taskRepository, $this->subjectRepository, $this->userRepository);
-    //     // $this->taskRepository->shouldReceive('find')->once()->andReturn(new Task());
-    //     $this->taskRepository->shouldReceive('delete')->once()->andReturn();
+    public function testDelete()
+    {   
+        $id = config('configtest.id');
+        $controller = new TaskController($this->taskRepository, $this->subjectRepository, $this->userRepository);
+        $this->taskRepository->shouldReceive('delete')->once()->andReturn();
 
-    //     $response = $controller->destroy($id);
-    //     $this->assertInstanceOf(RedirectResponse::class, $response);
-    //     $this->assertEquals(route('admin.tasks.index', $response->headers->get('location')));
-    // }
+        $response = $controller->destroy($id);
+        $this->assertInstanceOf(RedirectResponse::class, $response);
+        $this->assertEquals(route('admin.tasks.index', $response->headers->get('location')));
+    }
 }
